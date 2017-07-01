@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+		<link rel="stylesheet" href="build/conversational-form-docs.min.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript" src="build/form.js" crossorigin></script>
+	</head>
+	<body>
+		<script src="build/conversational-form-examples.min.js" id="examples-script"></script>
+
+		<main class="content cf-toggle">
+			<menu id="small-screen-menu">
+				<h2>iPau Bakiye Sorgula - Pamukkale Üniversitesi</h2>
+			</menu>
+
+			<section id="info" role="info">
+				<div class="close-btn" onclick="window.conversationalFormExamples.toggleMenuState()">
+					<svg viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+							<g transform="translate(-328.000000, -83.000000)" stroke="#FFFFFF" stroke-width="2">
+								<g id="close" transform="translate(329.000000, 84.000000)">
+									<path d="M19.6371966,19.2779351 L1.08132646,0.722064927"></path>
+									<path d="M19.4923318,0.722064927 L0.936461672,19.2779351"></path>
+								</g>
+							</g>
+						</g>
+					</svg>
+				</div>
+
+				<article>
+					<h1 id="writer">
+						iPau
+					</h1>
+					<h2>
+						Pamukkale Üniversitesi Bakiye Sorgulama
+					</h2>
+				</article>
+			</section>
+
+			<section role="form">
+				<div class="form-outer">
+
+				<form id="form" autocomplete="off">
+					<label for="uid">
+						Pusula kullanıcı adın nedir?
+					</label>
+
+					<input
+						id="uid"
+						name="uid"
+						required
+						cf-input-placeholder="Pusula kullanıcı adınız.."
+						cf-error="Pusula kullanıcı adınızı lütfen giriniz.."
+						cf-questions="Pusula <strong>kullanıcı adın</strong> nedir?"
+						/>
+
+					<label for="pass">
+						Pusula kullanıcı parolan nedir?
+					</label>
+
+					<input
+						id="pass"
+						name="pass"
+						type="password"
+						required
+						cf-input-placeholder="Pusula parolanız.."
+						cf-error="Pusula kullanıcı parolanızı lütfen giriniz.."
+						cf-questions="Merhaba {previous-answer}, pusula <strong>parolan</strong> nedir?"
+						/>
+						</div>
+					</div>
+				</form>
+
+				</div>
+			</section>
+
+			<section id="cf-context" role="cf-context" cf-context>
+
+			</section>
+		</main>
+
+
+    <script>
+    if (typeof console._commandLineAPI !== 'undefined') {
+    console.API = console._commandLineAPI;
+    } else if (typeof console._inspectorCommandLineAPI !== 'undefined') {
+        console.API = console._inspectorCommandLineAPI;
+    } else if (typeof console.clear !== 'undefined') {
+        console.API = console;
+    }
+    console.API.clear()
+    console.log('%c ./c² https://github.com/cagataycali', 'background: #222; color: #bada55');
+    console.log = function() {}
+    console.error = function() {}
+    console.warning = function() {}
+    console.info = function() {}
+			window.onload = function(){
+
+				var conversationalForm = window.cf.ConversationalForm.startTheConversation({
+					formEl: document.getElementById("form"),
+					context: document.getElementById("cf-context"),
+          flowStepCallback: function(dto, success, error){
+            console.API.clear()
+						if(dto.tag.name == "pass"){
+              $.ajax({
+  						  type: "POST",
+  						  url: '/',
+  						  data: $('form').serialize(),
+  						  success: (res) => {
+                  if (res.status) {
+                    conversationalForm.addRobotChatResponse(`Öğrenci kartında <strong>${res.bakiye} ₺ </strong> mevcut..`);
+                    window.ConversationalForm.addUserChatResponse("💸 🌮 🌯 🥗 🥘 🍝 🍜 🍲 ");
+                    return success();
+                  } else {
+                    if (res.message.trim() === "Kullanıcı adınız doğrulanmadı.") {
+                      window.ConversationalForm.remapTagsAndStartFrom(0, 1, true);
+                    } else if (res.message.trim() === 'Şifreniz doğrulanmadı.') {
+                      conversationalForm.addRobotChatResponse(`<strong style="color:darkred">Parolanız doğrulanmadı.</strong>`); // Şifre değil parola PAU!
+                    }
+                    return error();
+                  }
+  							},
+  						});
+						} else {
+              return success();
+            }
+					},
+					submitCallback: function(){
+            setTimeout(function () {
+              conversationalForm.addRobotChatResponse('<strong style="color:green">Umarım kartında bolca para vardır </strong> 🤑');
+            }, 200);
+					}
+				});
+			};
+
+		</script>
+	</body>
+</html>
