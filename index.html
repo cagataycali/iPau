@@ -116,6 +116,7 @@
                     return success();
                   } else {
                     if (res.message.trim() === "Kullanıcı adınız doğrulanmadı.") {
+		      conversationalForm.addRobotChatResponse(`<strong style="color:darkred">Kullanıcı adınız doğrulanmadı.</strong>`); // Şifre değil parola PAU!
                       window.ConversationalForm.remapTagsAndStartFrom(0, 1, true);
                     } else if (res.message.trim() === 'Şifreniz doğrulanmadı.') {
                       conversationalForm.addRobotChatResponse(`<strong style="color:darkred">Parolanız doğrulanmadı.</strong>`); // Şifre değil parola PAU!
