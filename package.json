@@ -6,13 +6,17 @@
   "repository": "https://github.com/cagataycali/ipau.git",
   "author": "Çağatay Çalı",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.2",
     "cheerio": "^1.0.0-rc.1",
     "express": "^4.15.3",
-    "request": "^2.81.0"
-  }
+    "request": "^2.81.0",
+    "snyk": "^1.317.0"
+  },
+  "snyk": true
 }
